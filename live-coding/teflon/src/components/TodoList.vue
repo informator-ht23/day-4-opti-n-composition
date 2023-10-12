@@ -1,54 +1,48 @@
-<script>
+<script setup>
+import { computed, ref } from 'vue';
+
 import TodoItem from './TodoItem.vue';
 import TodoNewField from './TodoNewField.vue';
 
-export default {
-  components: {
-    TodoItem,
-    TodoNewField
-},
-  data() {
-    return {
-      title: 'Todo list title',
-      items: [
-        {
-          value: 'Bananer',
-          isDone: false
-        },
-        {
-          value: 'Kaffe',
-          isDone: false
-        }
-      ]
-    };
+/** DATA DECLARATIONS */
+const title = ref('Todo list title');
+const items = ref([
+  {
+    value: 'Bananer',
+    isDone: false
   },
-  methods: {
-    handleCheckboxClick: function (todo) {
-      todo.isDone = !todo.isDone;
-    },
-    handleNewTodo: function(value) {
-      this.items.push({value, isDone: false});
-    },
-    handleDeleteTodo: function(itemValue) {
-      this.items = this.items.filter(item => item !== itemValue);
-    }
-  },
-  computed: {
-    todoRemainingCounter() {
-      const todosRemaining = this.items.filter(item => !item.isDone);
-      return todosRemaining.length;
-    },
-    isTodoEmpty() {
-      return this.todoRemainingCounter > 0;
-    }
+  {
+    value: 'Kaffe',
+    isDone: false
   }
-};
+]);
+
+/** COMPUTED DECLARATIONS */
+const todoRemainingCounter = computed(function() {
+  const todosRemaining = items.value.filter(item => !item.isDone);
+  return todosRemaining.length;
+});
+
+const isTodoEmpty = computed(() => todoRemainingCounter.value > 0);
+
+/** METHOD DECLARATIONS */
+function handleCheckboxClick(todo) {
+  todo.isDone = !todo.isDone;
+}
+
+function handleNewTodo(value) {
+  items.value.push({value, isDone: false});
+}
+
+function handleDeleteTodo(itemValue) {
+  items.value = items.value.filter(item => item !== itemValue);
+}
 </script>
 
 <template>
-  <h3>{{ this.title }}</h3>
+  <h3>{{ title }}</h3>
   <p v-if="isTodoEmpty">Du har {{ todoRemainingCounter }} todos kvar</p>
-  <div v-for="item in this.items">
+  <div v-for="item in items">
     <TodoItem 
       @onCheckboxClicked="handleCheckboxClick(item)"
       @onTodoDeleted="handleDeleteTodo(item)">

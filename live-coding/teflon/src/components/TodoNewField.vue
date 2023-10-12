@@ -4,6 +4,7 @@ import { ref } from 'vue';
 const fieldValue = ref('');
 
 
+defineEmits(['onNewTodoClicked'])
 </script>
 
 <template>
